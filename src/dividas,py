@@ -1,0 +1,41 @@
+import csv
+import math
+
+ARQUIVO = "data/dividas.csv"
+
+def registrar_divida():
+    credor = input("Credor: ")
+    valor_total = float(input("Valor total: "))
+    valor_pago = float(input("Valor pago: "))
+    valor_parcela = float(input("Valor da parcela: "))
+    data_vencimento = input("Data de vencimento (AAAA-MM-DD): ")
+
+    with open(ARQUIVO, "a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow([credor, valor_total, valor_pago, valor_parcela, data_vencimento])
+
+    print("Dívida registrada com sucesso!")
+
+def listar_dividas():
+    print("\n=== LISTA DE DÍVIDAS ===")
+    try:
+        with open(ARQUIVO, "r") as file:
+            reader = csv.reader(file)
+            for row in reader:
+                credor, valor_total, valor_pago, valor_parcela, vencimento = row
+                valor_total = float(valor_total)
+                valor_pago = float(valor_pago)
+                valor_parcela = float(valor_parcela)
+
+                total_restante = valor_total - valor_pago
+                parcelas_restantes = math.ceil(total_restante / valor_parcela)
+
+                print(f"Credor: {credor}")
+                print(f"Valor Total: R${valor_total:.2f}")
+                print(f"Valor Pago: R${valor_pago:.2f}")
+                print(f"Total Restante: R${total_restante:.2f}")
+                print(f"Parcelas Restantes: {parcelas_restantes}")
+                print(f"Vencimento: {vencimento}")
+                print("-"*30)
+    except FileNotFoundError:
+        print("Nenhuma dívida registrada ainda.")
